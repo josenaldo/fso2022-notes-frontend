@@ -34,7 +34,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 👤 **Josenaldo de Oliveira Matos Filho**
 
-- Website: https://josenaldo.github.io
+- Website: <https://josenaldo.github.io>
 - Twitter: [@josenaldomatos](https://twitter.com/josenaldomatos)
 - Github: [@josenaldo](https://github.com/josenaldo)
 - LinkedIn: [@josenaldo](https://linkedin.com/in/josenaldo)
