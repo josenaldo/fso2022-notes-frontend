@@ -3,10 +3,15 @@ import PropTypes from 'prop-types'
 
 const NoteForm = ({ addNote, newNote, handleNoteChange }) => {
   return (
-    <form onSubmit={addNote}>
-      <input value={newNote} onChange={handleNoteChange} />
-      <button type="submit">save</button>
-    </form>
+    <article>
+      <form onSubmit={addNote}>
+        <label>
+          Note
+          <input value={newNote} onChange={handleNoteChange} />
+          <button type="submit">Save</button>
+        </label>
+      </form>
+    </article>
   )
 }
 

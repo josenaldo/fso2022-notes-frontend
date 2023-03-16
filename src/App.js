@@ -108,51 +108,51 @@ const App = (props) => {
   }
 
   return (
-    <div className="App">
-      <h1>Notes</h1>
-
-      <Notification message={errorMessage} />
-
-      {user === null ? (
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
-      ) : (
-        <div>
+    <div className="container">
+      <main>
+        <h1>Notes</h1>
+        <Notification message={errorMessage} />
+        {user === null ? (
+          <LoginForm
+            handleLogin={handleLogin}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            username={username}
+            password={password}
+          />
+        ) : (
           <div>
-            <p>
-              Welcome {user.name}!{' '}
-              <button onClick={handleLogout}>Logout</button>
-            </p>
+            <div>
+              <p>
+                Welcome {user.name}!{' '}
+                <button className="small inline" onClick={handleLogout}>
+                  Logout
+                </button>
+              </p>
+            </div>
+            <NoteForm
+              addNote={addNote}
+              newNote={newNote}
+              handleNoteChange={handleNoteChange}
+            />
           </div>
-          <NoteForm
-            addNote={addNote}
-            newNote={newNote}
-            handleNoteChange={handleNoteChange}
-          />
+        )}
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
         </div>
-      )}
-
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
-        </button>
-      </div>
-      <ul>
-        {notesToShow.map((note) => (
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        ))}
-      </ul>
-
-      <Footer />
+        <div>
+          {notesToShow.map((note) => (
+            <Note
+              key={note.id}
+              note={note}
+              toggleImportance={() => toggleImportanceOf(note.id)}
+            />
+          ))}
+        </div>
+        <Footer />
+      </main>
     </div>
   )
 }
