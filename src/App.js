@@ -1,9 +1,11 @@
 import React from 'react'
 
-import Note from 'components/Note'
-import Notification from 'components/Notification'
-import Footer from 'components/Footer'
 import noteService from 'services/notes'
+
+import Note from 'components/Note'
+import Alert from 'components/Alert'
+import { ALERT_TYPE } from 'components/Alert'
+import Footer from 'components/Footer'
 import loginService from 'services/login'
 import LoginForm from 'components/LoginForm'
 import NoteForm from 'components/NoteForm'
@@ -13,28 +15,28 @@ import './App.css'
 
 const App = (props) => {
   const [notes, setNotes] = React.useState([])
-  const [newNote, setNewNote] = React.useState('A new note...')
   const [showAll, setShowAll] = React.useState(true)
-  const [errorMessage, setErrorMessage] = React.useState(null)
-  const [username, setUsername] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const [message, setMessage] = React.useState(null)
+
   const [user, setUser] = React.useState(null)
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important)
 
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
-  }
-
   React.useEffect(() => {
-    noteService
-      .getAll()
-      .then((initialNotes) => {
+    const fetchNotes = async () => {
+      try {
+        const initialNotes = await noteService.getAll()
         setNotes(initialNotes)
-      })
-      .catch((error) => {
-        setErrorMessage(`Erro: ${error}`)
-      })
+      } catch (error) {
+        setMessage({
+          type: ALERT_TYPE.ERROR,
+          content: 'Error fetching notes',
+          details: error.message,
+        })
+      }
+    }
+
+    fetchNotes()
   }, [])
 
   React.useEffect(() => {
@@ -46,22 +48,18 @@ const App = (props) => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
+  const handleLogin = async (credentials) => {
     try {
-      const user = await loginService.login({ username, password })
+      const user = await loginService.login(credentials)
 
       window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
       noteService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
     } catch (error) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setMessage({
+        type: ALERT_TYPE.ERROR,
+        content: 'Wrong credentials',
+      })
     }
   }
 
@@ -70,58 +68,75 @@ const App = (props) => {
     setUser(null)
   }
 
-  const toggleImportanceOf = (id) => {
+  const toggleImportanceOf = async (id) => {
     const note = notes.find((n) => n.id === id)
     const changeNote = { ...note, important: !note.important }
 
-    noteService
-      .update(id, changeNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((n) => (n.id !== id ? n : returnedNote)))
-      })
-      .catch((error) => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from server`
-        )
+    try {
+      const returnedNote = await noteService.update(id, changeNote)
+      setNotes(notes.map((n) => (n.id !== id ? n : returnedNote)))
 
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-
-        setNotes(notes.filter((n) => n.id !== id))
+      setMessage({
+        type: ALERT_TYPE.SUCCESS,
+        content: `Note '${note.content}' was updated`,
       })
+    } catch (error) {
+      setMessage({
+        type: ALERT_TYPE.ERROR,
+        content: `Note '${note.content}' was already removed from server`,
+      })
+
+      setNotes(notes.filter((n) => n.id !== id))
+    }
   }
 
-  const addNote = (event) => {
-    event.preventDefault()
-
-    const noteObject = {
-      content: newNote,
-      date: new Date(),
-      important: Math.random() < 0.5,
-    }
-
-    noteService.create(noteObject).then((returnedNote) => {
-      const createdNote = returnedNote
+  const addNote = async (noteObject) => {
+    try {
+      const createdNote = await noteService.create(noteObject)
       setNotes(notes.concat(createdNote))
-      setNewNote('')
-    })
+
+      setMessage({
+        type: ALERT_TYPE.SUCCESS,
+        content: `Note '${noteObject.content}' was created`,
+      })
+    } catch (error) {
+      setMessage({
+        type: ALERT_TYPE.ERROR,
+        content: 'Error creating note',
+        details: error.message,
+      })
+    }
+  }
+
+  const remove = async (id) => {
+    const note = notes.find((n) => n.id === id)
+
+    try {
+      await noteService.remove(id)
+      setNotes(notes.filter((n) => n.id !== id))
+
+      setMessage({
+        type: ALERT_TYPE.SUCCESS,
+        content: `Note '${note.content}' was deleted`,
+      })
+    } catch (error) {
+      setMessage({
+        type: ALERT_TYPE.ERROR,
+        content: `Note '${note.content}' was already removed from server`,
+      })
+
+      setNotes(notes.filter((n) => n.id !== id))
+    }
   }
 
   return (
     <div className="container">
       <main>
         <h1>Notes</h1>
-        <Notification message={errorMessage} />
+        <Alert message={message} setMessage={setMessage} />
         {user === null ? (
           <Togglable buttonLabel="Login">
-            <LoginForm
-              handleLogin={handleLogin}
-              handleUsernameChange={({ target }) => setUsername(target.value)}
-              handlePasswordChange={({ target }) => setPassword(target.value)}
-              username={username}
-              password={password}
-            />
+            <LoginForm handleLogin={handleLogin} />
           </Togglable>
         ) : (
           <div>
@@ -135,11 +150,7 @@ const App = (props) => {
             </div>
 
             <Togglable buttonLabel="New note">
-              <NoteForm
-                onSubmit={addNote}
-                value={newNote}
-                handleChange={handleNoteChange}
-              />
+              <NoteForm createNote={addNote} />
             </Togglable>
           </div>
         )}
@@ -154,6 +165,7 @@ const App = (props) => {
               key={note.id}
               note={note}
               toggleImportance={() => toggleImportanceOf(note.id)}
+              remove={() => remove(note.id)}
             />
           ))}
         </div>
