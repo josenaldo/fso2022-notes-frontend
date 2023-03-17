@@ -8,14 +8,8 @@ const LoginForm = ({
   username,
   password,
 }) => {
-  const [loginVisible, setLoginVisible] = React.useState(false)
-
-  if (!loginVisible) {
-    return <button onClick={() => setLoginVisible(true)}>Log in</button>
-  }
-
   return (
-    <article>
+    <div>
       <h2>Login</h2>
 
       <form onSubmit={handleLogin}>
@@ -40,13 +34,10 @@ const LoginForm = ({
           </label>
         </div>
         <div className="grid">
-          <button className="secondary" onClick={() => setLoginVisible(false)}>
-            Cancel
-          </button>
           <button type="submit">Login</button>
         </div>
       </form>
-    </article>
+    </div>
   )
 }
 

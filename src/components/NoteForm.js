@@ -1,24 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const NoteForm = ({ addNote, newNote, handleNoteChange }) => {
+const NoteForm = ({ onSubmit, value, handleChange }) => {
   return (
-    <article>
-      <form onSubmit={addNote}>
+    <div>
+      <form onSubmit={onSubmit}>
         <label>
           Note
-          <input value={newNote} onChange={handleNoteChange} />
+          <input value={value} onChange={handleChange} />
           <button type="submit">Save</button>
         </label>
       </form>
-    </article>
+    </div>
   )
 }
 
 NoteForm.propTypes = {
-  addNote: PropTypes.func.isRequired,
-  newNote: PropTypes.string.isRequired,
-  handleNoteChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
 }
 
 export default NoteForm

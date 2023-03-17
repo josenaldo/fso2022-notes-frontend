@@ -7,6 +7,7 @@ import noteService from 'services/notes'
 import loginService from 'services/login'
 import LoginForm from 'components/LoginForm'
 import NoteForm from 'components/NoteForm'
+import Togglable from 'components/Togglable'
 
 import './App.css'
 
@@ -113,13 +114,15 @@ const App = (props) => {
         <h1>Notes</h1>
         <Notification message={errorMessage} />
         {user === null ? (
-          <LoginForm
-            handleLogin={handleLogin}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            username={username}
-            password={password}
-          />
+          <Togglable buttonLabel="Login">
+            <LoginForm
+              handleLogin={handleLogin}
+              handleUsernameChange={({ target }) => setUsername(target.value)}
+              handlePasswordChange={({ target }) => setPassword(target.value)}
+              username={username}
+              password={password}
+            />
+          </Togglable>
         ) : (
           <div>
             <div>
@@ -130,16 +133,19 @@ const App = (props) => {
                 </button>
               </p>
             </div>
-            <NoteForm
-              addNote={addNote}
-              newNote={newNote}
-              handleNoteChange={handleNoteChange}
-            />
+
+            <Togglable buttonLabel="New note">
+              <NoteForm
+                onSubmit={addNote}
+                value={newNote}
+                handleChange={handleNoteChange}
+              />
+            </Togglable>
           </div>
         )}
         <div>
           <button onClick={() => setShowAll(!showAll)}>
-            show {showAll ? 'important' : 'all'}
+            Show {showAll ? 'important' : 'all'}
           </button>
         </div>
         <div>
