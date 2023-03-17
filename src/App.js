@@ -15,12 +15,14 @@ import './App.css'
 
 const App = (props) => {
   const [notes, setNotes] = React.useState([])
+  const [user, setUser] = React.useState(null)
+
   const [showAll, setShowAll] = React.useState(true)
   const [message, setMessage] = React.useState(null)
 
-  const [user, setUser] = React.useState(null)
-
   const notesToShow = showAll ? notes : notes.filter((note) => note.important)
+
+  const noteFormRef = React.useRef()
 
   React.useEffect(() => {
     const fetchNotes = async () => {
@@ -92,6 +94,7 @@ const App = (props) => {
 
   const addNote = async (noteObject) => {
     try {
+      noteFormRef.current.toggleVisibility()
       const createdNote = await noteService.create(noteObject)
       setNotes(notes.concat(createdNote))
 
@@ -149,7 +152,7 @@ const App = (props) => {
               </p>
             </div>
 
-            <Togglable buttonLabel="New note">
+            <Togglable buttonLabel="New note" ref={noteFormRef}>
               <NoteForm createNote={addNote} />
             </Togglable>
           </div>

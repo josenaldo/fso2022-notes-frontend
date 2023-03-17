@@ -1,6 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+/**
+ * Form for creating a new note.
+ *
+ * @param {Object} props - Component props.
+ * @param {function} props.createNote - Function to call when creating a new note.
+ *
+ * @returns {JSX.Element} - Rendered component.
+ */
 const NoteForm = ({ createNote }) => {
   const [newNote, setNewNote] = React.useState('')
 

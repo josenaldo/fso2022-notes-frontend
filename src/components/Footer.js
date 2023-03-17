@@ -1,5 +1,15 @@
 import React from 'react'
 
+/**
+ * Component that displays a footer with attribution to the Note app and the University of Helsinki.
+ *
+ * @component
+ *
+ * @return {JSX.Element} - The rendered footer element.
+ *
+ * @example
+ * <Footer />
+ */
 const Footer = () => {
   const footerStyle = {
     color: 'grey',

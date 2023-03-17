@@ -1,8 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Togglable = ({ children, buttonLabel }) => {
+/**
+ * A reusable component for toggling the visibility of child components
+ *
+ * @component
+ * @param {Object} props - The props object
+ * @param {string} props.buttonLabel - The label for the toggle button
+ * @param {React.ReactNode} props.children - The child components to be toggled
+ * @return {JSX.Element} - The rendered component
+ */
+const Togglable = (props, refs) => {
   const [visible, setVisible] = React.useState(false)
+
+  React.useImperativeHandle(refs, () => {
+    return {
+      toggleVisibility,
+    }
+  })
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -11,7 +26,7 @@ const Togglable = ({ children, buttonLabel }) => {
   if (!visible) {
     return (
       <article>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
       </article>
     )
   }
@@ -19,7 +34,7 @@ const Togglable = ({ children, buttonLabel }) => {
   return (
     <article>
       <div>
-        {children}
+        {props.children}
         <button className="secondary" onClick={toggleVisibility}>
           Cancel
         </button>
@@ -28,9 +43,11 @@ const Togglable = ({ children, buttonLabel }) => {
   )
 }
 
+Togglable.displayName = 'Togglable'
+
 Togglable.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
 }
 
-export default Togglable
+export default React.forwardRef(Togglable)

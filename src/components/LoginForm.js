@@ -1,6 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+/**
+ * Component that displays a login form for the user to input their username and password.
+ *
+ * @component
+ *
+ * @param {Object} props - The component props.
+ * @param {function} props.handleLogin - The function to handle login form submission.
+ *
+ * @returns {JSX.Element} - The rendered login form element.
+ *
+ * @example
+ * import React from 'react';
+ * import LoginForm from './LoginForm';
+ *
+ * const handleLogin = (credentials) => {
+ *   // handle user login
+ * }
+ *
+ * const App = () => {
+ *   return (
+ *     <div>
+ *       <LoginForm handleLogin={handleLogin} />
+ *     </div>
+ *   );
+ * };
+ *
+ * export default App;
+ */
 const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
