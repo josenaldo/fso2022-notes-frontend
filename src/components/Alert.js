@@ -30,16 +30,18 @@ import './Alert.css'
  * />
  */
 const Alert = ({ message, setMessage }) => {
+  const timeoutRef = React.useRef(null)
+
   const closeAlert = () => {
     setMessage(null)
   }
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setMessage(null)
     }, 5000)
 
-    return () => clearTimeout(timer)
+    return () => clearTimeout(timeoutRef.current)
   }, [message])
 
   if (!message) {
