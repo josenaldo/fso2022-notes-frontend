@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
  * @param {React.ReactNode} props.children - The child components to be toggled
  * @return {JSX.Element} - The rendered component
  */
-const Togglable = (props, refs) => {
+const Togglable = React.forwardRef((props, refs) => {
   const [visible, setVisible] = React.useState(false)
 
   React.useImperativeHandle(refs, () => {
@@ -41,7 +41,7 @@ const Togglable = (props, refs) => {
       </div>
     </article>
   )
-}
+})
 
 Togglable.displayName = 'Togglable'
 
@@ -50,4 +50,4 @@ Togglable.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default React.forwardRef(Togglable)
+export default Togglable

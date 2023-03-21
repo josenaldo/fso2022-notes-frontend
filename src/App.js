@@ -13,7 +13,7 @@ import Togglable from 'components/Togglable'
 
 import './App.css'
 
-const App = (props) => {
+const App = () => {
   const [notes, setNotes] = React.useState([])
   const [user, setUser] = React.useState(null)
 
