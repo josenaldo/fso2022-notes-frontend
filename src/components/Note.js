@@ -71,11 +71,11 @@ Note.propTypes = {
   note: PropTypes.shape({
     content: PropTypes.string.isRequired,
     important: PropTypes.bool.isRequired,
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     date: PropTypes.string.isRequired,
   }).isRequired,
-  toggleImportance: PropTypes.func.isRequired,
-  remove: PropTypes.func.isRequired,
+  toggleImportance: PropTypes.func,
+  remove: PropTypes.func,
 }
 
 export default Note
