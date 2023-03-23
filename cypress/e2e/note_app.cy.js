@@ -1,4 +1,5 @@
 const appUrl = 'http://localhost:3000'
+const apiUrl = 'http://localhost:3001'
 
 const testUser = {
   name: 'Test User',
@@ -8,6 +9,8 @@ const testUser = {
 
 describe('Note app', function () {
   beforeEach(function () {
+    cy.request('POST', `${apiUrl}/api/testing/reset`)
+    cy.request('POST', `${apiUrl}/api/users`, testUser)
     cy.visit(appUrl)
   })
 
@@ -42,6 +45,25 @@ describe('Note app', function () {
       cy.get('#note-input').type('a note created by cypress')
       cy.contains('Save').click()
       cy.contains('a note created by cypress')
+    })
+
+    describe('and a note exists', function () {
+      beforeEach(function () {
+        cy.contains('New note').click()
+        cy.get('#note-input').type('another note cypress')
+        cy.contains('Save').click()
+      })
+
+      it('it can be made not important', function () {
+        cy.contains('another note cypress')
+          .parentsUntil('article')
+          .contains('Make not important')
+          .click()
+
+        cy.contains('another note cypress')
+          .parentsUntil('article')
+          .contains('Make important')
+      })
     })
   })
 })
