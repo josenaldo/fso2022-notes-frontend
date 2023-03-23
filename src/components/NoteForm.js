@@ -38,7 +38,9 @@ const NoteForm = ({ createNote }) => {
           />
         </label>
 
-        <button type="submit">Save</button>
+        <button id="save-note-button" type="submit">
+          Save
+        </button>
       </form>
     </div>
   )
