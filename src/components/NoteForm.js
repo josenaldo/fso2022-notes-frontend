@@ -30,7 +30,10 @@ const NoteForm = ({ createNote }) => {
         <label>
           Note
           <input
+            type="text"
+            id="note-input"
             value={newNote}
+            placeholder="Write note content here"
             onChange={(event) => setNewNote(event.target.value)}
           />
         </label>
