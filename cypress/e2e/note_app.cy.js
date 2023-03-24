@@ -14,21 +14,34 @@ describe('Note app', function () {
     cy.visit(appUrl)
   })
 
-  it('front page can be opened', () => {
-    cy.contains('Notes')
-    cy.contains(
-      'Note app, Department of Computer Science, University of Helsinki 2022'
-    )
-  })
+  describe('when logged out', function () {
+    it('front page can be opened', () => {
+      cy.contains('Notes')
+      cy.contains(
+        'Note app, Department of Computer Science, University of Helsinki 2022'
+      )
+    })
 
-  it('login form can be opened', () => {
-    cy.contains('Login').click()
+    it('login form can be opened', () => {
+      cy.contains('Login').click()
 
-    cy.get('#username').type(testUser.username)
-    cy.get('#password').type(testUser.password)
-    cy.get('#login-button').click()
+      cy.get('#username').type(testUser.username)
+      cy.get('#password').type(testUser.password)
+      cy.get('#login-button').click()
 
-    cy.contains(`Welcome ${testUser.name}!`)
+      cy.contains(`Welcome ${testUser.name}!`)
+    })
+
+    it('login fails with wrong password', () => {
+      cy.contains('Login').click()
+      cy.get('#username').type(testUser.username)
+      cy.get('#password').type('wrong')
+      cy.get('#login-button').click()
+
+      cy.get('.alert-error').should('contain', 'Wrong credentials')
+
+      cy.get('html').should('not.contain', `Welcome ${testUser.name}!`)
+    })
   })
 
   describe('when logged in', function () {
