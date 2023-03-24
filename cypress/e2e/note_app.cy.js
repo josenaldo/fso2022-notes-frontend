@@ -1,6 +1,3 @@
-const appUrl = 'http://localhost:3000'
-const apiUrl = 'http://localhost:3001'
-
 const testUser = {
   name: 'Test User',
   username: 'testuser',
@@ -9,9 +6,9 @@ const testUser = {
 
 describe('Note app', function () {
   beforeEach(function () {
-    cy.request('POST', `${apiUrl}/api/testing/reset`)
-    cy.request('POST', `${apiUrl}/api/users`, testUser)
-    cy.visit(appUrl)
+    cy.request('POST', `${Cypress.env('BACKEND')}/api/testing/reset`)
+    cy.request('POST', `${Cypress.env('BACKEND')}/api/users`, testUser)
+    cy.visit('/')
   })
 
   describe('when logged out', function () {
@@ -46,11 +43,7 @@ describe('Note app', function () {
 
   describe('when logged in', function () {
     beforeEach(function () {
-      cy.contains('Login').click()
-
-      cy.get('#username').type(testUser.username)
-      cy.get('#password').type(testUser.password)
-      cy.get('#login-button').click()
+      cy.login({ username: testUser.username, password: testUser.password })
     })
 
     it('a new note can be created', function () {
@@ -62,19 +55,22 @@ describe('Note app', function () {
 
     describe('and a note exists', function () {
       beforeEach(function () {
-        cy.contains('New note').click()
-        cy.get('#note-input').type('another note cypress')
-        cy.contains('Save').click()
+        cy.createNote({
+          content: 'another note cypress',
+          important: true,
+        })
       })
 
       it('it can be made not important', function () {
-        cy.contains('another note cypress')
-          .parentsUntil('article')
+        cy.get('#note-list')
+          .contains('another note cypress')
+          .parentsUntil('#note-list')
           .contains('Make not important')
           .click()
 
-        cy.contains('another note cypress')
-          .parentsUntil('article')
+        cy.get('#note-list')
+          .contains('another note cypress')
+          .parentsUntil('#note-list')
           .contains('Make important')
       })
     })

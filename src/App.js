@@ -162,7 +162,7 @@ const App = () => {
             Show {showAll ? 'important' : 'all'}
           </button>
         </div>
-        <div>
+        <div id="note-list">
           {notesToShow.map((note) => (
             <Note
               key={note.id}
