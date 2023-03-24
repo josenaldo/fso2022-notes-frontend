@@ -32,7 +32,8 @@
     "coverage": "react-scripts test --coverage",
     "server": "json-server -p3001 --watch db.json",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test:e2e": "cypress run"
   },
   "eslintConfig": {
     "extends": [
