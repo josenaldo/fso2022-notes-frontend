@@ -74,5 +74,34 @@ describe('Note app', function () {
           .contains('Make important')
       })
     })
+
+    describe('and several notes exist', function () {
+      beforeEach(function () {
+        cy.createNote({
+          content: 'first note',
+          important: false,
+        })
+        cy.createNote({
+          content: 'second note',
+          important: false,
+        })
+        cy.createNote({
+          content: 'third note',
+          important: false,
+        })
+      })
+
+      it('one of those can be made important', function () {
+        cy.get('#note-list')
+          .contains('second note')
+          .parentsUntil('#note-list')
+          .find('button.importance-button')
+          .as('theButton')
+
+        cy.get('@theButton').should('contain', 'Make important')
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'Make not important')
+      })
+    })
   })
 })

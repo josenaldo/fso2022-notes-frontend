@@ -56,10 +56,16 @@ const Note = ({ note, toggleImportance, remove }) => {
       </div>
 
       <div className="grid">
-        <button className="small inline" onClick={toggleImportance}>
+        <button
+          className="importance-button small inline"
+          onClick={toggleImportance}
+        >
           {label}
         </button>
-        <button className="small inline secondary" onClick={remove}>
+        <button
+          className="delete-button small inline secondary"
+          onClick={remove}
+        >
           Delete
         </button>
       </div>
